@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from datetime import datetime
+from webdriver_utils import get_chromedriver
 
 start_time = time.time()  # 크롤링 시작 시각
 
@@ -303,18 +304,7 @@ def go_to_page(driver, page_num):
         print(f'페이지 {page_num} 이동 중 에러: {str(e)}')
         return False
 
-# 셀레니움 옵션 설정 (브라우저 창 안 띄우기)
-chrome_options = Options()
-# 아래 옵션들은 Streamlit Cloud 서버에서 안정적으로 실행하기 위한 필수 옵션들입니다.
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--window-size=1920,1080")
-# user-agent 설정은 유지합니다.
-chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-
-driver = webdriver.Chrome(options=chrome_options)
+driver = get_chromedriver()
 url = 'https://momos.co.kr/custom/sub/product_category/green_bean_all_shop.html?cate_no=64'
 driver.get(url)
 

@@ -1,13 +1,12 @@
 import time
 import re
 import pandas as pd
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime
+from webdriver_utils import get_chromedriver
 
 start_time = time.time()  # 크롤링 시작 시각
 
@@ -49,22 +48,11 @@ def process_to_korean(process):
             words.append(w)
     return ' '.join([str(word_mapping.get(word, word)) for word in words])
 
-# 셀레니움 옵션 설정 (브라우저 창 안 띄우기)
-chrome_options = Options()
-# 아래 옵션들은 Streamlit Cloud 서버에서 안정적으로 실행하기 위한 필수 옵션들입니다.
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--window-size=1920,1080")
-# user-agent 설정은 유지합니다.
-chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-
-driver = webdriver.Chrome(options=chrome_options)
+driver = get_chromedriver()
+url = 'https://www.mcffee.co.kr/goods/goods_list.php?cateCd=001'
 
 # 1. 첫 페이지에서 마지막 페이지 번호 파싱
-base_url = 'https://greenbeans.co.kr/product/list.html?cate_no=128'
-driver.get(base_url)
+driver.get(url)
 WebDriverWait(driver, 20).until(
     EC.presence_of_element_located((By.CSS_SELECTOR, 'ul.prdList.grid3 li'))
 )
@@ -184,8 +172,6 @@ for page in range(1, last_page + 1):
     except Exception as e:
         print(f'페이지 파싱 에러: {str(e)}')
         continue
-
-driver.quit()
 
 print('수집된 데이터 개수:', len(data))
 
