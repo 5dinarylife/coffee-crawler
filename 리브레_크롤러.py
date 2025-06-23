@@ -168,12 +168,15 @@ def clean_coffee_name(name):
     
     return name
 
+# 셀레니움 옵션 설정 (브라우저 창 안 띄우기)
 chrome_options = Options()
-chrome_options.add_argument('--headless=new')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--window-size=1920,1080')
+# 아래 옵션들은 Streamlit Cloud 서버에서 안정적으로 실행하기 위한 필수 옵션들입니다.
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--window-size=1920,1080")
+# user-agent 설정은 유지합니다.
 chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
 
 driver = webdriver.Chrome(options=chrome_options)

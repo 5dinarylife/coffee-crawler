@@ -32,7 +32,7 @@ CRAWLERS = {
     '엠아이커피': {'script': '엠아이커피_크롤러.py', 'filename': '엠아이커피_원두.xlsx', 'status': '대기중'},
     '코빈즈': {'script': '코빈즈_크롤러.py', 'filename': '코빈즈_원두.xlsx', 'status': '대기중'},
     '알마씨엘로': {'script': '알마씨엘로_크롤러.py', 'filename': '알마씨엘로_원두.xlsx', 'status': '대기중'},
-    '소펙스': {'script': '소펙스_크롤러.py', 'filename': '소펙스_원두.xlsx', 'status': '대기중'},
+    # '소펙스': {'script': '소펙스_크롤러.py', 'filename': '소펙스_원두.xlsx', 'status': '대기중'}, # 제외
     '리브레': {'script': '리브레_크롤러.py', 'filename': '리브레_원두.xlsx', 'status': '대기중'},
     '후성': {'script': '후성_크롤러.py', 'filename': '후성_원두.xlsx', 'status': '대기중'},
     '모모스': {'script': '모모스_크롤러.py', 'filename': '모모스_원두.xlsx', 'status': '대기중'}
