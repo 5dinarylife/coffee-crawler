@@ -4,18 +4,14 @@ FROM python:3.11-slim
 # 2. 작업 디렉토리 설정: 컨테이너 내에서 명령어가 실행될 기본 경로입니다.
 WORKDIR /app
 
-# 3. 시스템 의존성 및 구글 크롬 설치
-#    - apt-get update: 패키지 목록을 최신화합니다.
-#    - wget, gnupg: 구글의 GPG 키를 받아오고 등록하기 위해 필요합니다.
-#    - google-chrome-stable: 안정적인 최신 버전의 구글 크롬 브라우저를 설치합니다.
-#    - --no-install-recommends: 추천 패키지는 제외하여 이미지 용량을 줄입니다.
-#    - 마지막에 불필요한 파일들을 정리하여 최종 이미지 크기를 최적화합니다.
+# 3. 시스템 의존성 및 구글 크롬 설치 (최신 Ubuntu 호환 방식)
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
+    ca-certificates \
     --no-install-recommends \
-    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
+    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
     && apt-get install -y \
     google-chrome-stable \
