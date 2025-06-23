@@ -4,8 +4,9 @@ FROM python:3.11-slim
 # 2. 작업 디렉토리 설정: 컨테이너 내에서 명령어가 실행될 기본 경로입니다.
 WORKDIR /app
 
-# 3. 시스템 의존성 및 구글 크롬 설치 (최신 Ubuntu 호환 방식)
+# 3. 시스템 의존성, dos2unix 및 구글 크롬 설치
 RUN apt-get update && apt-get install -y \
+    dos2unix \
     wget \
     gnupg \
     ca-certificates \
@@ -25,10 +26,11 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. 애플리케이션 소스 코드 복사
-#    - 현재 디렉토리의 모든 파일을 컨테이너의 /app 디렉토리로 복사합니다.
+# 5. 애플리케이션 소스 코드 복사 및 변환
 COPY . .
+# 윈도우의 줄바꿈 문자(CRLF)를 리눅스(LF)로 변환하고, 실행 권한을 부여합니다.
+RUN find . -type f -name "*.py" -exec dos2unix {} \;
+RUN find . -type f -name "*.py" -exec chmod +x {} \;
 
-# 6. 컨테이너 실행 명령어
-#    - 컨테이너가 시작될 때 `run_job.py` 스크립트를 실행합니다.
-CMD ["python", "run_job.py"] 
+# 6. 컨테이너 실행 명령어 (로그 즉시 출력 및 안정성 강화)
+CMD ["python", "-u", "run_job.py"] 
