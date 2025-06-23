@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커피 원두 크롤러</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .status-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .status-panel h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .status-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .status-item h3 {
+            color: #2c3e50;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-item p {
+            color: #34495e;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .crawlers-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .crawlers-panel h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .crawler-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .crawler-table th, .crawler-table td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        .crawler-table th {
+            background-color: #f8f9fa;
+        }
+
+        .crawler-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .crawler-table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .crawler-table td {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .crawler-table td:last-child {
+            text-align: right;
+        }
+
+        .crawler-table td button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .crawler-table td button.btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .crawler-table td button.btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .crawler-table td button.btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .crawler-table td button.btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .logs-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .logs-panel h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .logs-container {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .log-entry.success {
+            color: #2ecc71;
+        }
+
+        .log-entry.error {
+            color: #e74c3c;
+        }
+
+        .log-entry.warning {
+            color: #f39c12;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .status-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .crawler-table {
+                width: 100%;
+            }
+            
+            .crawler-table th, .crawler-table td {
+                padding: 8px;
+            }
+            
+            .crawler-table td:last-child {
+                text-align: left;
+            }
+            
+            .crawler-table td button {
+                width: 100%;
+                margin-top: 8px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☕ 커피 원두 크롤러</h1>
+            <p>다양한 커피 원두 정보를 자동으로 수집합니다</p>
+        </div>
+
+        <div class="content">
+            <div class="alert alert-success" id="successAlert"></div>
+            <div class="alert alert-error" id="errorAlert"></div>
+
+            <div class="control-panel">
+                <h2>🎮 제어 패널</h2>
+                <div class="button-group">
+                    <button class="btn btn-primary" id="startAllBtn" onclick="startAllCrawlers()">
+                        <span class="loading" id="startAllLoading" style="display: none;"></span>
+                        🚀 전체 크롤링 시작
+                    </button>
+                    <button class="btn btn-danger" id="stopBtn" onclick="stopCrawling()" style="display: none;">
+                        🛑 크롤링 중단
+                    </button>
+                    <a href="/download" class="btn btn-success" id="downloadBtn" style="display: none;">
+                        📥 통합 파일 다운로드
+                    </a>
+                    <a href="/download-all" class="btn btn-warning" id="downloadAllBtn" style="display: none;">
+                        📦 모든 파일 다운로드
+                    </a>
+                </div>
+            </div>
+
+            <div class="status-panel">
+                <h2>📊 전체 상태</h2>
+                <div class="status-info">
+                    <div class="status-item">
+                        <h3>전체 상태</h3>
+                        <p id="overallStatusText">대기 중</p>
+                    </div>
+                    <div class="status-item">
+                        <h3>진행률</h3>
+                        <p id="overallProgressText">0%</p>
+                    </div>
+                    <div class="status-item">
+                        <h3>완료된 크롤러</h3>
+                        <p id="completedCrawlersText">0 / 9</p>
+                    </div>
+                    <div class="status-item">
+                        <h3>시작 시간</h3>
+                        <p id="startTimeText">-</p>
+                    </div>
+                    <div class="status-item">
+                        <h3>종료 시간</h3>
+                        <p id="endTimeText">-</p>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="overallProgressBar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="crawlers-panel">
+                <h2>🛠️ 개별 크롤러</h2>
+                <table class="crawler-table">
+                    <thead>
+                        <tr>
+                            <th>크롤러 이름</th>
+                            <th>실행</th>
+                            <th>수집 데이터 갯수</th>
+                            <th>수집 시간</th>
+                            <th>상태</th>
+                            <th>오류 메시지</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crawlersTableBody">
+                        <!-- JS에서 동적으로 행 생성 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="logs-panel">
+                <h2>📝 실행 로그</h2>
+                <div class="logs-container" id="logsContainer">
+                    <div class="log-entry">시스템이 준비되었습니다. 크롤링을 시작하세요.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let statusInterval;
+        const crawlers = {{ crawlers | tojson }};
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById(type === 'success' ? 'successAlert' : 'errorAlert');
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function createCrawlerRow(crawlerName, crawlerInfo, status) {
+            const statusTextMap = {
+                'idle': '대기',
+                'running': '실행중',
+                'completed': '완료',
+                'failed': '실패'
+            };
+            return `
+                <tr id="crawler-row-${crawlerName}">
+                    <td>${crawlerInfo.display_name}</td>
+                    <td><button class="btn btn-primary btn-small" onclick="startSingleCrawler('${crawlerName}')" id="startBtn-${crawlerName}">🚀 실행</button></td>
+                    <td id="dataCount-${crawlerName}">${status.data_count > 0 ? status.data_count + '개' : '-'}</td>
+                    <td id="duration-${crawlerName}">${status.duration ? status.duration + '초' : '-'}</td>
+                    <td id="status-${crawlerName}" class="status-${status.status}">${statusTextMap[status.status]}</td>
+                    <td id="error-${crawlerName}" style="color:red; font-size:0.9em;">${status.status === 'failed' && status.error ? status.error : ''}</td>
+                </tr>
+            `;
+        }
+
+        function renderCrawlersTable(statusData) {
+            const tableBody = document.getElementById('crawlersTableBody');
+            tableBody.innerHTML = '';
+            Object.entries(crawlers).forEach(([crawlerName, crawlerInfo]) => {
+                const status = statusData.individual_status[crawlerName] || {status:'idle', data_count:0, duration:null, error:null};
+                tableBody.innerHTML += createCrawlerRow(crawlerName, crawlerInfo, status);
+            });
+        }
+
+        function updateStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    // 전체 상태 업데이트
+                    document.getElementById('overallStatusText').textContent = data.is_running ? '실행 중' : '대기 중';
+                    document.getElementById('overallProgressText').textContent = data.progress + '%';
+                    document.getElementById('completedCrawlersText').textContent = data.completed_crawlers + ' / ' + data.total_crawlers;
+                    
+                    // 시간 업데이트
+                    document.getElementById('startTimeText').textContent = data.start_time ? 
+                        new Date(data.start_time).toLocaleString('ko-KR') : '-';
+                    document.getElementById('endTimeText').textContent = data.end_time ? 
+                        new Date(data.end_time).toLocaleString('ko-KR') : '-';
+                    
+                    // 진행률 바 업데이트
+                    document.getElementById('overallProgressBar').style.width = data.progress + '%';
+                    
+                    // 전체 버튼 상태 업데이트
+                    const startAllBtn = document.getElementById('startAllBtn');
+                    const stopBtn = document.getElementById('stopBtn');
+                    const downloadBtn = document.getElementById('downloadBtn');
+                    const downloadAllBtn = document.getElementById('downloadAllBtn');
+                    
+                    if (data.is_running) {
+                        startAllBtn.disabled = true;
+                        startAllBtn.innerHTML = '<span class="loading"></span>전체 실행 중...';
+                        stopBtn.style.display = 'inline-block';
+                    } else {
+                        startAllBtn.disabled = false;
+                        startAllBtn.innerHTML = '🚀 전체 크롤링 시작';
+                        stopBtn.style.display = 'none';
+                        
+                        // 완료되었으면 다운로드 버튼 표시
+                        if (data.progress === 100) {
+                            downloadBtn.style.display = 'inline-block';
+                            downloadAllBtn.style.display = 'inline-block';
+                        }
+                    }
+                    
+                    // 개별 크롤러 상태 업데이트
+                    renderCrawlersTable(data);
+                    
+                    // 로그 업데이트
+                    const logsContainer = document.getElementById('logsContainer');
+                    logsContainer.innerHTML = '';
+                    
+                    data.logs.forEach(log => {
+                        const logEntry = document.createElement('div');
+                        logEntry.className = 'log-entry';
+                        
+                        if (log.includes('✅') || log.includes('Success')) {
+                            logEntry.classList.add('success');
+                        } else if (log.includes('❌') || log.includes('ERROR') || log.includes('오류')) {
+                            logEntry.classList.add('error');
+                        } else if (log.includes('⏰') || log.includes('Warning')) {
+                            logEntry.classList.add('warning');
+                        }
+                        
+                        logEntry.textContent = log;
+                        logsContainer.appendChild(logEntry);
+                    });
+                    
+                    // 로그 컨테이너를 맨 아래로 스크롤
+                    logsContainer.scrollTop = logsContainer.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('상태 업데이트 오류:', error);
+                });
+        }
+
+        function startAllCrawlers() {
+            const startAllBtn = document.getElementById('startAllBtn');
+            const startAllLoading = document.getElementById('startAllLoading');
+            
+            startAllBtn.disabled = true;
+            startAllLoading.style.display = 'inline-block';
+            
+            fetch('/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert(data.message, 'success');
+                    if (!statusInterval) {
+                        statusInterval = setInterval(updateStatus, 1000);
+                    }
+                } else {
+                    showAlert(data.message, 'error');
+                    startAllBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('전체 크롤링 시작 오류:', error);
+                showAlert('전체 크롤링 시작 중 오류가 발생했습니다.', 'error');
+                startAllBtn.disabled = false;
+            })
+            .finally(() => {
+                startAllLoading.style.display = 'none';
+            });
+        }
+
+        function startSingleCrawler(crawlerName) {
+            const startBtn = document.getElementById(`startBtn-${crawlerName}`);
+            
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<span class="loading"></span>실행중...';
+            
+            fetch(`/start_single/${crawlerName}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert(data.message, 'success');
+                    if (!statusInterval) {
+                        statusInterval = setInterval(updateStatus, 1000);
+                    }
+                } else {
+                    showAlert(data.message, 'error');
+                    startBtn.disabled = false;
+                    startBtn.innerHTML = '🚀 실행';
+                }
+            })
+            .catch(error => {
+                console.error('개별 크롤러 시작 오류:', error);
+                showAlert('크롤러 시작 중 오류가 발생했습니다.', 'error');
+                startBtn.disabled = false;
+                startBtn.innerHTML = '🚀 실행';
+            });
+        }
+
+        function stopCrawling() {
+            fetch('/stop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showAlert(data.message, data.status === 'success' ? 'success' : 'error');
+            })
+            .catch(error => {
+                console.error('크롤링 중단 오류:', error);
+                showAlert('크롤링 중단 중 오류가 발생했습니다.', 'error');
+            });
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus();
+            statusInterval = setInterval(updateStatus, 2000);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,20 @@
+{
+  "name": "coffee-crawlers",
+  "version": "1.0.0",
+  "description": "커피 수입사별 Node.js 크롤러 모음",
+  "main": "run_all_crawlers.js",
+  "type": "module",
+  "scripts": {
+    "엠아이커피": "node 엠아이커피_크롤러.js",
+    "모모스": "node 모모스_크롤러.js",
+    "블레스빈": "node 블레스빈_크롤러.js",
+    "알마씨엘로": "node 알마씨엘로_크롤러.js",
+    "코빈즈": "node 코빈즈_크롤러.js",
+    "후성": "node 후성_크롤러.js",
+    "all": "node run_all_crawlers.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.11.0",
+    "xlsx": "^0.18.5"
+  }
+}

@@ -50,13 +50,54 @@ streamlit run streamlit_app.py
 http://localhost:8501
 ```
 
-### 온라인 배포 (Streamlit Cloud)
+### 온라인 배포
+
+#### 방법 1: Google Cloud Run (권장)
+
+1. **Google Cloud 프로젝트 생성**
+   - [Google Cloud Console](https://console.cloud.google.com/)에서 새 프로젝트 생성
+   - 프로젝트 ID를 메모해두세요
+
+2. **Google Cloud CLI 설치 및 설정**
+```bash
+# Windows에서 설치
+winget install Google.CloudSDK
+
+# 또는 수동 설치: https://cloud.google.com/sdk/docs/install
+```
+
+3. **배포 스크립트 실행**
+```bash
+# PowerShell에서 실행
+.\deploy_gcp.ps1
+```
+
+4. **수동 배포 (스크립트 사용 불가 시)**
+```bash
+# Google Cloud 로그인
+gcloud auth login
+
+# 프로젝트 설정
+gcloud config set project [YOUR_PROJECT_ID]
+
+# 필요한 API 활성화
+gcloud services enable cloudbuild.googleapis.com
+gcloud services enable run.googleapis.com
+gcloud services enable containerregistry.googleapis.com
+
+# 배포
+gcloud builds submit --config cloudbuild.yaml .
+```
+
+#### 방법 2: Streamlit Cloud (제한적)
 
 1. **GitHub에 코드 업로드**
 2. **Streamlit Cloud에서 배포**
    - [share.streamlit.io](https://share.streamlit.io) 접속
    - GitHub 저장소 연결
    - 자동 배포
+
+⚠️ **주의**: Streamlit Cloud에서는 Selenium과 ChromeDriver 사용에 제한이 있을 수 있습니다.
 
 ## 📖 사용법
 
@@ -80,6 +121,9 @@ http://localhost:8501
 ```
 ├── streamlit_app.py          # 메인 Streamlit 앱
 ├── requirements.txt          # 필요한 패키지 목록
+├── Dockerfile               # Docker 컨테이너 설정
+├── cloudbuild.yaml          # Google Cloud Build 설정
+├── deploy_gcp.ps1           # Google Cloud 배포 스크립트
 ├── .streamlit/
 │   └── config.toml          # Streamlit 설정
 ├── gsc_crawler.py           # GSC 크롤러
@@ -102,12 +146,22 @@ http://localhost:8501
 - **Web Scraping**: Selenium, BeautifulSoup
 - **Data Processing**: Pandas
 - **File Format**: Excel (openpyxl)
+- **Container**: Docker
+- **Cloud Platform**: Google Cloud Run
+
+## 💰 비용 정보
+
+### Google Cloud Run
+- **무료 티어**: 월 200만 요청, 360,000 vCPU-초, 180,000 GiB-초
+- **과금**: 무료 티어 초과 시 요청당 $0.0000024, vCPU-초당 $0.00002400
+- **예상 월 비용**: 소규모 사용 시 월 $1-5 정도
 
 ## ⚠️ 주의사항
 
 - 크롤링 시 각 사이트의 이용약관을 준수해주세요
 - 과도한 요청으로 서버에 부하를 주지 않도록 주의하세요
 - 수집된 데이터는 개인적인 용도로만 사용해주세요
+- Google Cloud Run 배포 시 처음 요청 시 콜드 스타트가 발생할 수 있습니다
 
 ## 📝 라이선스
 

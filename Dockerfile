@@ -4,21 +4,45 @@ FROM python:3.11-slim
 # 2. 작업 디렉토리 설정: 컨테이너 내에서 명령어가 실행될 기본 경로입니다.
 WORKDIR /app
 
-# 3. 시스템 의존성, dos2unix 및 구글 크롬 설치
+# 3. 시스템 의존성, dos2unix 및 최신 구글 크롬, 최신 ChromeDriver 자동 설치
 RUN apt-get update && apt-get install -y \
     dos2unix \
     wget \
-    gnupg \
+    unzip \
     ca-certificates \
+    gpg \
+    fonts-liberation \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcups2 \
+    libdbus-1-3 \
+    libgdk-pixbuf2.0-0 \
+    libnspr4 \
+    libnss3 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libgtk-3-0 \
+    libxshmfence1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxtst6 \
+    xdg-utils \
+    libxss1 \
+    libgconf-2-4 \
+    libu2f-udev \
     --no-install-recommends \
     && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
-    && apt-get install -y \
-    google-chrome-stable \
-    --no-install-recommends \
-    && apt-get purge -y --auto-remove wget gnupg \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y google-chrome-stable --no-install-recommends \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN ln -sf /usr/bin/google-chrome-stable /usr/bin/google-chrome
+RUN ls -l /usr/bin/google-chrome* && /usr/bin/google-chrome --version
 
 # 4. Python 라이브러리 설치
 #    - 먼저 requirements.txt 파일만 복사하여 라이브러리를 설치합니다.
@@ -32,5 +56,5 @@ COPY . .
 RUN find . -type f -name "*.py" -exec dos2unix {} \;
 RUN find . -type f -name "*.py" -exec chmod +x {} \;
 
-# 6. 컨테이너 실행 명령어 (로그 즉시 출력 및 안정성 강화)
-CMD ["python", "-u", "run_job.py"] 
+# 6. 컨테이너 실행 명령어 (Flask 웹 서버 실행)
+CMD ["python", "-u", "main.py"] 
