@@ -1,0 +1,10 @@
+# System dependencies for running headless Chrome with Selenium
+libglib2.0-0
+libnss3
+libgconf-2-4
+libfontconfig1
+libx11-6
+libxrender1
+libxext6
+libxfixes3
+libsm6 
